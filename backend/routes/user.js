@@ -20,6 +20,7 @@ const signinBody=z.object({
 
 router.post("/signup",async (req,res)=>{
     const {success} = signupBody.safeParse(req.body)
+    console.log(success)
 
     if(!success){
         return res.status(411).json({
@@ -60,7 +61,7 @@ router.post("/signup",async (req,res)=>{
 
 })
 
-router.post("signin",async(req,res)=>{
+router.post("/signin",async(req,res)=>{
     const {success} = signinBody.safeParse(req.body);
 
     if(!success){
@@ -98,6 +99,7 @@ const updateBody=z.object({
 })
 
 router.put("/", authMiddleware, async (req,res)=>{
+    console.log("ddfdvd")
     const {success}=updateBody.safeParse(req.body)
 
     if(!success){

@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-mongoose.connect("mongodb+srv://hemant_1001:Hemant%401001@cluster0.6ea4z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect("mongodb+srv://hemant_1001:Hemant%401001@cluster0.6ea4z.mongodb.net/paytm?retryWrites=true&w=majority&appName=Cluster0")
 
 const userSchema=new mongoose.Schema({
     username:{
