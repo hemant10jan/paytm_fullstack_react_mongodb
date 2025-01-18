@@ -1,38 +1,65 @@
+import { useEffect, useState } from "react"
 import Button from "./Button"
-
-
-
+import axios from "axios"
+import {useNavigate} from "react-router-dom"
 
 export default function Users(){
+    const[users,setUsers]=useState([])
+    const[filter,setFilter]=useState("")
+
+    useEffect(()=>{
+      axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${filter}`)
+      .then((response)=>{
+        console.log(response.data)
+        setUsers(response.data.user)
+      })
+    },[filter,setUsers])
+
     return(
         <>
         <div className="font-bold text-lg mt-6">Users</div>
         <div className="mb-6">
             <input
+            onChange={(e)=>setFilter(e.target.value)}
             type="text"
             placeholder="Search users..."
             className="w-full px-2 py-1 border-slate-200 border rounded"/>
         </div>
         <div>
-            <User/>
+            {users.map((user,index)=>{
+              return <User key={index} user={user}/>
+            })}
         </div>
         </>
     )
 }
 
 
-function User(){
+function User({user}){
+    const navigate=useNavigate()
     return(
-        <div className="flex justify-between  m-1 w-full">
-            <div className="flex justify-center">
-                <div className="bg-gray-100 rounded-full  h-8 w-8 m-2 flex justify-center">
-                    <div className="flex flex-col justify-center p-1">U1</div>
-                </div>
-                <div className="flex flex-col justify-center m-2">User 1</div>
+        <div className="flex justify-between">
+        <div className="flex">
+          <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
+            <div className="flex flex-col justify-center h-full text-xl">
+              {user.firstname.charAt(0)}
             </div>
-            <div className="flex flex-col justify-center mt-2 mr-2">
-                <Button label={"Send Money"}/>
+          </div>
+          <div className="flex flex-col justify-center h-full">
+            <div>
+              {`${user.firstname} ${user.lastname}`}
             </div>
+          </div>
         </div>
+  
+        <div className="flex flex-col justify-center h-ful">
+          <Button
+            onClick={()=>{
+              navigate(`/send?id=${user._id}&name=${user.firstname} ${user.lastname}`)
+            }}
+            label={"Send Money"}
+          />
+        </div>
+      </div>
     )
 }

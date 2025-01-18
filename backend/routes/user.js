@@ -63,6 +63,7 @@ router.post("/signup",async (req,res)=>{
 
 router.post("/signin",async(req,res)=>{
     const {success} = signinBody.safeParse(req.body);
+    console.log(success)
 
     if(!success){
         return res.status(411).json({
@@ -116,26 +117,40 @@ router.get("/bulk",async (req,res)=>{
     const filter = req.query.filter || ""
 
     const users = await User.find({
-        $or:[
-            {
-                firstname:{
-                    $regex:filter
-                }
+    $or: [
+        {
+            firstname: {
+                $regex: `^${filter}`,
+                $options: "i"
             },
-            {
-                lastname:{
-                    $regex:filter
+        },
+        {
+            lastname: {
+                $regex: `^${filter}`,
+                $options: "i"
+            },
+        },
+        {
+            $expr: {
+                $regexMatch: {
+                    input: { $concat: ["$firstname"," ","$lastname"] },
+                    regex: `^${filter}`,
+                    options: "i"
                 }
             }
-        ]
-    })
+        }
+    ]
+});
+
 
     res.json({
         user:users.map((user)=>(
            { _id:user.userId,
             firstname:user.firstname,
             lastname:user.lastname,
-            username:user.username}
+            username:user.username,
+            _id:user._id
+        }
         ))
     })
 })
